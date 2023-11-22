@@ -1,7 +1,7 @@
 from rest_framework.decorators import api_view
 from django.http.response import JsonResponse, HttpResponseBadRequest
 from rdflib import Graph
-from .utils import query_league_info_dbpedia, query_language_used_wikidata
+from ..utils import query_league_info_dbpedia, query_language_used_wikidata
 
 import os
 
@@ -11,7 +11,6 @@ knowledge_graph.parse(
     os.path.join(os.getcwd(), os.path.join("main", "top_5_league_player.ttl"))
 )
 iri_prefix = "http://127.0.0.1:3333#"
-
 
 @api_view(["GET"])
 def get_player_detail(request, player_iri_suffix: str):
@@ -79,26 +78,3 @@ def get_player_detail(request, player_iri_suffix: str):
         return JsonResponse(player_detail)
     except:
         return HttpResponseBadRequest("Please provide correct player's IRI suffix!")
-
-
-@api_view(["GET"])
-def search_by_league(request):
-    """
-    Return IRI and name of players given league
-    - Sample usage: http://127.0.0.1:8000/search-by-id/?league=Bundesliga 
-    """
-    league = request.GET.get("league", "Other")
-    query = f"""
-        PREFIX : <{iri_prefix}>
-
-        SELECT *
-        WHERE {{
-            ?player_iri a :FootballPlayer;
-                            :name ?name;
-                            :league :{league} .
-        }}
-    """
-    players = {}
-    for result in knowledge_graph.query(query):
-        players[result["player_iri"].strip()] = result["name"].strip()
-    return JsonResponse(players)

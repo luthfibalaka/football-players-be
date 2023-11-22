@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import get_player_detail, search_by_league
+from .views.mainViews import get_player_detail
+from .views.searchByLeagueViews import search_by_league
 
 app_name = "account"
 
