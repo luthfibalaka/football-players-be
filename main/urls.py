@@ -7,6 +7,6 @@ app_name = "account"
 
 urlpatterns = [
     path("detail/<player_iri_suffix>", get_player_detail, name="getPlayerDetail"),
-    path("search-by-id/", search_by_league, name="searchByLeague"),
-    path("search-by-id/", search_by_club, name="searchByClub"),
+    path("search-by-league/", search_by_league, name="searchByLeague"),
+    path("search-by-club/", search_by_club, name="searchByClub"),
 ]
