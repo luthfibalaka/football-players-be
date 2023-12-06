@@ -1,5 +1,5 @@
 from rest_framework.decorators import api_view
-from django.http.response import JsonResponse, HttpResponseBadRequest
+from django.http.response import JsonResponse
 from rdflib import Graph
 
 import os
@@ -11,14 +11,14 @@ knowledge_graph.parse(
 )
 iri_prefix = "http://127.0.0.1:3333#"
 
+
 @api_view(["GET"])
 def search_by_name(request):
     """
     Return IRI and name of players given league
     - Sample usage: http://127.0.0.1:8000/search-by-id/?name=Jordan_Ferri
     """
-    name = request.GET.get("name", "Other")
-    print(name)
+    name = request.GET.get("name", "")
     query = f"""
         PREFIX : <{iri_prefix}>
 
@@ -30,8 +30,6 @@ def search_by_name(request):
         }}
     """
     players = {}
-    # print(query)
     for result in knowledge_graph.query(query):
-        print(result)
         players[result["player_iri"].strip()] = result["name"].strip()
     return JsonResponse(players)

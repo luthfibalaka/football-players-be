@@ -70,10 +70,14 @@ def get_player_detail(request, player_iri_suffix: str):
             player_detail["league_description"] = "No information"
 
         # Add language used by player from Wikidata
-        (
-            player_detail["language_iri"],
-            player_detail["languaged_used"],
-        ) = query_language_used_wikidata(player_detail["name"])
+        try:
+            (
+                player_detail["language_iri"],
+                player_detail["languaged_used"]
+            ) = query_language_used_wikidata(player_detail["name"])
+        except:
+            player_detail["language_iri"] = "#"
+            player_detail["languaged_used"] = "No information"
 
         return JsonResponse(player_detail)
     except:
